@@ -6,10 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" href="img/flowers.png" type="image/x-icon">
-    <title>flowers</title>
+    <title>Thank You Zia 💖</title>
+    <style>
+        .message {
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.2);
+            text-align: center;
+            z-index: 1000;
+            animation: messageFloat 3s ease-in-out infinite;
+            backdrop-filter: blur(5px);
+            max-width: 80%;
+        }
+
+        .message h2 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 1rem;
+            font-family: 'Georgia', serif;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message p {
+            color: #333;
+            font-size: 1.2em;
+            margin: 0.8em 0;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.5;
+        }
+
+        @keyframes messageFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
 </head>
 <body class="container">
-  <!-- Pembuat code: https://codepen.io/mdusmanansari/pen/BamepLe -->
+  <div class="message">
+        <h2>Thank You, Zia! 💖</h2>
+        <p>Every moment with you is like a beautiful flower blooming in my heart.</p>
+        <p>You bring colors to my world, just like these flowers dancing before you.</p>
+        <p>You're the sunshine that makes my garden of love grow.</p>
+        <p>I promise to cherish and love you forever. 🌹</p>
+    </div>
     <div class="night"></div>
     <div class="flowers">
       <div class="flower flower--1">
