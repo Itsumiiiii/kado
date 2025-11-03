@@ -2,29 +2,456 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="img/flowers.png" type="image/x-icon">
-    <title>Flowers</title>
+    <title>A Special Question 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .container.hide {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .proposal-text {
+            color: white;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .proposal-text p {
+            font-size: 1.3em;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .bouquet-container {
+            position: relative;
+            width: 350px;
+            height: 300px;
+            margin: 0 auto 40px;
+            animation: growBouquet 1.5s ease-out;
+        }
+
+        /* Wrapper/Pembungkus Buket */
+        .wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            clip-path: polygon(20% 0%, 80% 0%, 90% 100%, 10% 100%);
+            z-index: 5;
+            animation: wrapperAppear 0.8s ease-out 2.5s backwards;
+        }
+
+        .wrapper::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(139, 69, 19, 0.3) 10px,
+                rgba(139, 69, 19, 0.3) 20px
+            );
+        }
+
+        /* Pita */
+        .ribbon {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            z-index: 6;
+            animation: ribbonAppear 0.5s ease-out 2.8s backwards;
+        }
+
+        .ribbon::before,
+        .ribbon::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            top: -5px;
+        }
+
+        .ribbon::before {
+            left: -20px;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%);
+        }
+
+        .ribbon::after {
+            right: -20px;
+            clip-path: polygon(0 0, 100% 0, 50% 80%, 0 100%);
+        }
+
+        /* Bunga dalam buket */
+        .flower {
+            position: absolute;
+            animation: flowerPop 0.6s ease-out backwards;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Posisi bunga-bunga dalam buket */
+        .flower:nth-child(1) { left: 50%; top: 0px; transform: translateX(-50%) translateZ(20px); animation-delay: 1.5s; z-index: 3; }
+        .flower:nth-child(2) { left: 32%; top: 15px; transform: translateX(-50%) translateZ(15px) rotate(-10deg); animation-delay: 1.6s; z-index: 3; }
+        .flower:nth-child(3) { left: 68%; top: 15px; transform: translateX(-50%) translateZ(15px) rotate(10deg); animation-delay: 1.7s; z-index: 3; }
+        .flower:nth-child(4) { left: 22%; top: 35px; transform: translateX(-50%) translateZ(10px) rotate(-15deg); animation-delay: 1.8s; z-index: 2; }
+        .flower:nth-child(5) { left: 78%; top: 35px; transform: translateX(-50%) translateZ(10px) rotate(15deg); animation-delay: 1.9s; z-index: 2; }
+        .flower:nth-child(6) { left: 42%; top: 45px; transform: translateX(-50%) translateZ(5px) rotate(-5deg); animation-delay: 2.0s; z-index: 2; }
+        .flower:nth-child(7) { left: 58%; top: 45px; transform: translateX(-50%) translateZ(5px) rotate(5deg); animation-delay: 2.1s; z-index: 2; }
+
+        .stem {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 120px;
+            background: linear-gradient(to bottom, #4a7c2c, #2d5016);
+            border-radius: 2px;
+            z-index: 1;
+            box-shadow: -2px 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes sway {
+            0% {
+                transform: rotate(-3deg);
+            }
+            100% {
+                transform: rotate(3deg);
+            }
+        }
+
+        .petals {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            animation: sway 3s ease-in-out infinite alternate;
+        }
+
+        .petal {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            border-radius: 50% 50% 50% 50%;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0 100%;
+            box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.1);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Warna bunga bervariasi */
+        .flower:nth-child(1) .petal { background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4); }
+        .flower:nth-child(2) .petal { background: linear-gradient(45deg, #ffb6c1, #ff69b4, #ffb6c1); }
+        .flower:nth-child(3) .petal { background: linear-gradient(45deg, #ffd1dc, #ffb6c1, #ffd1dc); }
+        .flower:nth-child(4) .petal { background: linear-gradient(45deg, #ff1493, #c71585, #ff1493); }
+        .flower:nth-child(5) .petal { background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4); }
+        .flower:nth-child(6) .petal { background: linear-gradient(45deg, #ffc0cb, #ff69b4, #ffc0cb); }
+        .flower:nth-child(7) .petal { background: linear-gradient(45deg, #ffb6c1, #ff69b4, #ffb6c1); }
+
+        .petal:nth-child(1) { transform: rotate(0deg) translate(-12px, -17px) rotateX(20deg); }
+        .petal:nth-child(2) { transform: rotate(72deg) translate(-12px, -17px) rotateX(20deg); }
+        .petal:nth-child(3) { transform: rotate(144deg) translate(-12px, -17px) rotateX(20deg); }
+        .petal:nth-child(4) { transform: rotate(216deg) translate(-12px, -17px) rotateX(20deg); }
+        .petal:nth-child(5) { transform: rotate(288deg) translate(-12px, -17px) rotateX(20deg); }
+
+        .center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #ffed4e);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 3s forwards;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #ff6b9d, #c06c84);
+            color: white;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #bbb, #888);
+            color: white;
+        }
+
+        .no-btn:hover {
+            transform: scale(0.95);
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: floatHeart 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .message.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .message h2 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .message p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes growBouquet {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes flowerPop {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes wrapperAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes ribbonAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes floatHeart {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="greetings">
-    <!-- silahkan menambah kata sesuai keinginan dengan <span>text...</span -->
-        <span>H</span>
-        <span>A</span>
-        <span>L</span>
-        <span>L</span>
-        <span>O</span>
-    </div>
-    <div class="description">
-        <span>Aku ada hadiah spesial buat kamu!!</span>
-    </div>
-    <div class="button">
-        <button>
-            <a href="flower.html">Klik disini</a>
-        </button>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container" id="mainContainer">
+        <h1>Dear Zia... 💕</h1>
+        <div class="proposal-text">
+            <p>Would you make my life complete by being my girlfriend?</p>
+        </div>
+        <div style="margin: 40px 0;">
+            <img src="img/heart.gif" alt="Heart" style="width: 150px; height: 150px;">
+        </div>
         
+        <div class="buttons">
+            <button class="yes-btn" onclick="sayYes()">Yes! 💖</button>
+            <button class="no-btn" onclick="moveButton(this)">No</button>
+        </div>
     </div>
+
+    <div class="message" id="message">
+        <h2>Yay! 🎉💕</h2>
+        <p>You just made me the happiest person ever! ❤️</p>
+    </div>
+
+    <script>
+        function sayYes() {
+            // Redirect to flower.html
+            window.location.href = 'flower.html';
+        }
+
+        function moveButton(btn) {
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 100);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const colors = ['❤️', '💖', '💝', '💕', '💗'];
+            const createHeart = () => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 4000);
+            };
+
+            // Initial hearts
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+
+            // Continue creating hearts
+            setInterval(createHeart, 300);
+        }
+    </script>
 </body>
 </html>
